@@ -37,21 +37,26 @@
         window.location.href = "login.html";
         return;
       }
-
+  
       try {
-        const response = await fetch("http://localhost:5000/jobs/my-jobs", {
+        const response = await fetch("http://localhost:5000/api/jobs/my-jobs", {
           headers: {
             Authorization: "Bearer " + token
           }
         });
+  
+        if (!response.ok) {
+          throw new Error("Failed to load jobs: " + response.statusText);
+        }
+  
         const jobs = await response.json();
         const jobList = document.getElementById("job-list");
-
-        if (jobs.length === 0) {
+  
+        if (!jobs.length) {
           jobList.innerHTML = "<p>You haven't posted any jobs yet.</p>";
           return;
         }
-
+  
         jobList.innerHTML = jobs.map(job => `
           <div class="job-card">
             <h4>${job.title}</h4>
@@ -62,9 +67,10 @@
         `).join("");
       } catch (err) {
         console.error(err);
-        alert("Error fetching your jobs.");
+        alert("Error fetching jobs: " + err.message);
       }
     });
   </script>
+  
 </body>
 </html>

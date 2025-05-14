@@ -19,19 +19,64 @@
 
   <main class="container form-container">
     <h2>Create an Account</h2>
-    <form>
-      <label>Full Name</label>
-      <input type="text" placeholder="Enter your name" required>
-      <label>Email</label>
-      <input type="email" placeholder="Enter your email" required>
-      <label>Password</label>
-      <input type="password" placeholder="Create a password" required>
-      <button class="btn-primary" type="submit">Register</button>
-    </form>
+    <form id="registerForm">
+        <label>Full Name</label>
+        <input type="text" id="name" required />
+      
+        <label>Email</label>
+        <input type="email" id="email" required />
+      
+        <label>Password</label>
+        <input type="password" id="password" required />
+      
+        <label>Role</label>
+        <select id="role" required>
+          <option value="">Select a role</option>
+          <option value="employer">Employer</option>
+          <option value="seeker">Job Seeker</option>
+        </select>
+      
+        <button type="submit" class="btn-primary">Register</button>
+      </form>
+      
   </main>
 
   <footer>
     <p>&copy; 2025 JobBoard. All rights reserved.</p>
   </footer>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("registerForm");
+  
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+  
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const role = document.getElementById("role").value;
+  
+        try {
+          const res = await fetch("http://localhost:5000/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password, role })
+          });
+  
+          const data = await res.json();
+          if (res.ok) {
+            localStorage.setItem("token", data.token);
+            alert("Registration successful!");
+            window.location.href = "employer-dashboard.html";
+          } else {
+            alert(data.message || "Registration failed");
+          }
+        } catch (err) {
+          alert("Error: " + err.message);
+        }
+      });
+    });
+  </script>
+    
 </body>
 </html>
