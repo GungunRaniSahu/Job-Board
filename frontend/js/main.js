@@ -98,3 +98,75 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error('Job form not found.');
     }
 });
+
+const searchInput = document.getElementById('search-input');
+
+searchInput.addEventListener('input', () => {
+    const searchTerm = searchInput.value.toLowerCase();
+    const jobs = document.querySelectorAll('#job-listing li');
+
+    jobs.forEach(job => {
+        const text = job.textContent.toLowerCase();
+        if (text.includes(searchTerm)) {
+            job.style.display = 'block';
+        } else {
+            job.style.display = 'none';
+        }
+    });
+});
+
+let currentPage = 1;
+const jobsPerPage = 5; // You can change this value based on how many jobs you want per page
+
+const prevButton = document.getElementById('prev-page');
+const nextButton = document.getElementById('next-page');
+const jobListingContainer = document.getElementById('job-listing');
+
+// Fetch jobs with pagination
+async function fetchJobs(page) {
+    try {
+        const res = await fetch(`http://localhost:5000/api/jobs?page=${page}&limit=${jobsPerPage}`);
+        if (!res.ok) throw new Error('Failed to fetch jobs');
+        const jobs = await res.json();
+        
+        // Clear current jobs
+        jobListingContainer.innerHTML = '';
+        
+        // Display fetched jobs
+        jobs.forEach(job => {
+            const jobLi = document.createElement('li');
+            jobLi.innerHTML = `
+                <h3>${job.title}</h3>
+                <p>${job.company}</p>
+                <p>${job.location}</p>
+            `;
+            jobListingContainer.appendChild(jobLi);
+        });
+
+        // Enable/disable pagination buttons
+        prevButton.disabled = page === 1;
+        nextButton.disabled = jobs.length < jobsPerPage;
+
+    } catch (error) {
+        console.error('Error fetching jobs:', error);
+        alert('Failed to load jobs. Please try again later.');
+    }
+}
+
+// Event listeners for pagination buttons
+prevButton.addEventListener('click', () => {
+    if (currentPage > 1) {
+        currentPage--;
+        fetchJobs(currentPage);
+    }
+});
+
+nextButton.addEventListener('click', () => {
+    currentPage++;
+    fetchJobs(currentPage);
+});
+
+// Initial fetch of jobs
+fetchJobs(currentPage);
+
+
