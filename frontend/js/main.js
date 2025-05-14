@@ -1,17 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Ensure all elements are loaded before trying to add event listeners
     const registerForm = document.getElementById('register-form');
     const jobForm = document.getElementById('job-form');
     const jobListingContainer = document.getElementById('job-listing');
 
-    // Check if register form exists before attaching the event listener
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const userType = document.getElementById('userType').value;  // Ensure this exists in HTML
+            const userType = document.getElementById('userType').value;  
         
             try {
                 const res = await fetch('http://localhost:5000/api/auth/register', {
@@ -36,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error('Register form not found.');
     }
 
-    // Fetch Jobs if the job listing container exists
     if (jobListingContainer) {
         async function fetchJobs() {
             try {

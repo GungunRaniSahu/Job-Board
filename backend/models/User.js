@@ -15,7 +15,7 @@ const UserSchema = new mongoose.Schema({
         required: true
     },
     userType: {
-        type: String, // 'employer' or 'job seeker'
+        type: String, 
         required: true
     }
 });

@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Job = require('../models/jobModel'); // Import the Job model
+const Job = require('../models/jobModel'); 
 
-// Route to create a new job
 router.post('/create', async (req, res) => {
   try {
     const { title, description, company, location, salary } = req.body;
@@ -22,7 +21,6 @@ router.post('/create', async (req, res) => {
   }
 });
 
-// Route to get all jobs
 router.get('/', async (req, res) => {
   try {
     const jobs = await Job.find();
