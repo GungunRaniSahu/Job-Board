@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Employer Dashboard - JobBoard</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="container">
+      <h1 class="logo">JobBoard</h1>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="post-job.html">Post a Job</a>
+        <a href="login.html">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2>Your Posted Jobs</h2>
+    <section id="job-list" class="job-listings">
+      <!-- Jobs will be injected here -->
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 JobBoard. All rights reserved.</p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please login first.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:5000/jobs/my-jobs", {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        });
+        const jobs = await response.json();
+        const jobList = document.getElementById("job-list");
+
+        if (jobs.length === 0) {
+          jobList.innerHTML = "<p>You haven't posted any jobs yet.</p>";
+          return;
+        }
+
+        jobList.innerHTML = jobs.map(job => `
+          <div class="job-card">
+            <h4>${job.title}</h4>
+            <p>${job.company} | ${job.location}</p>
+            <p><strong>Salary:</strong> $${job.salary}</p>
+            <p>${job.description}</p>
+          </div>
+        `).join("");
+      } catch (err) {
+        console.error(err);
+        alert("Error fetching your jobs.");
+      }
+    });
+  </script>
+</body>
+</html>
