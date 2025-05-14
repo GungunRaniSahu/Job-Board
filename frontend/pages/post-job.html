@@ -1,42 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Post a Job - Job Board</title>
-    <link rel="stylesheet" href="../css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post a Job - Job Board</title>
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <header>
-        <h1>Post a Job</h1>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="login.html">Login</a>
-        </nav>
-    </header>
+  <header class="navbar">
+    <div class="container">
+      <h1 class="logo">JobBoard</h1>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
 
-    <section>
-        <form id="job-form">
-            <label for="title">Job Title:</label>
-            <input type="text" id="title" required>
-        
-            <label for="company">Company:</label>
-            <input type="text" id="company" required>
-        
-            <label for="description">Job Description:</label>
-            <textarea id="description" required></textarea>
-        
-            <label for="location">Location:</label>
-            <input type="text" id="location" required>
-        
-            <label for="salary">Salary:</label>
-            <input type="text" id="salary" required>
-        
-            <button type="submit">Post Job</button>
-        </form>
-        
-    </section>
+  <main class="container form-container">
+    <h2>Post a New Job</h2>
+    <form>
+      <label>Job Title</label>
+      <input type="text" placeholder="e.g. Frontend Developer" required>
+      <label>Company Name</label>
+      <input type="text" placeholder="e.g. TechCorp" required>
+      <label>Location</label>
+      <input type="text" placeholder="e.g. Toronto, Canada" required>
+      <label>Job Type</label>
+      <select>
+        <option>Full-Time</option>
+        <option>Part-Time</option>
+        <option>Contract</option>
+      </select>
+      <label>Description</label>
+      <textarea placeholder="Job details..." rows="5" required></textarea>
+      <button class="btn-primary" type="submit">Submit Job</button>
+    </form>
+  </main>
 
-    <script src="../js/main.js" defer></script>
+  <footer>
+    <p>&copy; 2025 JobBoard. All rights reserved.</p>
+  </footer>
 </body>
 </html>

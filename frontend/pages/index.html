@@ -1,26 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Board</title>
-    <link rel="stylesheet" href="../css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Job Board</title>
+  <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
-    <header>
-        <h1>Job Board</h1>
-        <nav>
-            <a href="login.html">Login</a>
-            <a href="register.html">Register</a>
-            <a href="post-job.html">Post a Job</a>
-        </nav>
-    </header>
+  <header class="navbar">
+    <div class="container">
+      <h1 class="logo">JobBoard</h1>
+      <nav>
+        <a href="login.html">Login</a>
+        <a href="register.html">Register</a>
+        <a href="post-job.html" class="btn-primary">Post a Job</a>
+      </nav>
+    </div>
+  </header>
 
-    <section id="job-list">
-        <h2>Available Jobs</h2>
-        <ul id="job-listing"></ul>
+  <main class="container">
+    <section class="hero">
+      <h2>Find Your Dream Job</h2>
+      <p>Browse thousands of job listings and apply in seconds</p>
+      <input type="text" placeholder="Search jobs..." class="search-box"/>
     </section>
 
-    <script src="../js/main.js" defer></script>
+    <section class="job-listings">
+      <h3>Recent Jobs</h3>
+      <div class="job-card">
+        <h4>Frontend Developer</h4>
+        <p>ABC Tech | Toronto | Full-Time</p>
+        <a href="#" class="btn-secondary">View Details</a>
+      </div>
+      <div class="job-card">
+        <h4>Backend Developer</h4>
+        <p>XYZ Innovations | Vancouver | Contract</p>
+        <a href="#" class="btn-secondary">View Details</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 JobBoard. All rights reserved.</p>
+  </footer>
 </body>
 </html>

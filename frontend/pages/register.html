@@ -1,42 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Job Board</title>
-    <link rel="stylesheet" href="../css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Job Board</title>
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <header>
-        <h1>Register</h1>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="login.html">Login</a>
-        </nav>
-    </header>
+  <header class="navbar">
+    <div class="container">
+      <h1 class="logo">JobBoard</h1>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
 
-    <section>
-        <form id="register-form">
-            <label for="name">Full Name:</label>
-            <input type="text" id="name" required>
-        
-            <label for="email">Email:</label>
-            <input type="email" id="email" required>
-        
-            <label for="password">Password:</label>
-            <input type="password" id="password" required>
-        
-            <label for="userType">User Type:</label>
-            <select id="userType" required>
-                <option value="employer">Employer</option>
-                <option value="jobSeeker">Job Seeker</option>
-            </select>
-        
-            <button type="submit">Register</button>
-        </form>
-        
-    </section>
+  <main class="container form-container">
+    <h2>Create an Account</h2>
+    <form>
+      <label>Full Name</label>
+      <input type="text" placeholder="Enter your name" required>
+      <label>Email</label>
+      <input type="email" placeholder="Enter your email" required>
+      <label>Password</label>
+      <input type="password" placeholder="Create a password" required>
+      <button class="btn-primary" type="submit">Register</button>
+    </form>
+  </main>
 
-    <script src="../js/main.js" defer></script>
+  <footer>
+    <p>&copy; 2025 JobBoard. All rights reserved.</p>
+  </footer>
 </body>
 </html>
