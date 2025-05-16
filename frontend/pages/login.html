@@ -8,6 +8,7 @@
 </head>
 <body>
   <header class="navbar">
+    
     <div class="container">
       <h1 class="logo">JobBoard</h1>
       <nav>
@@ -19,13 +20,16 @@
 
   <main class="container form-container">
     <h2>Login to Your Account</h2>
-    <form>
-      <label>Email</label>
-      <input type="email" placeholder="Enter your email" required>
-      <label>Password</label>
-      <input type="password" placeholder="Enter your password" required>
-      <button class="btn-primary" type="submit">Login</button>
-    </form>
+    <form id="loginForm">
+        <label>Email</label>
+        <input type="email" id="email" required />
+      
+        <label>Password</label>
+        <input type="password" id="password" required />
+      
+        <button type="submit" class="btn-primary">Login</button>
+      </form>
+      
   </main>
 
   <footer>
@@ -34,6 +38,11 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const form = document.getElementById("loginForm");
+  
+      if (!form) {
+        console.error("loginForm not found");
+        return;
+      }
   
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -61,7 +70,9 @@
         }
       });
     });
+    
   </script>
+  
   
 </body>
 </html>

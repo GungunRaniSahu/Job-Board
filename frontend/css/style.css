@@ -165,4 +165,34 @@
     padding: 1rem 0;
     margin-top: 2rem;
   }
+  body.dark {
+    background-color: #111827;
+    color: #f9fafb;
+  }
+  
+  body.dark .navbar,
+  body.dark footer {
+    background-color: #1f2937;
+  }
+  
+  body.dark input,
+  body.dark textarea,
+  body.dark select {
+    background-color: #1f2937;
+    color: #f9fafb;
+    border: 1px solid #374151;
+  }
+  
+  body.dark .btn-primary {
+    background-color: #6366f1;
+  }
+  
+  body.dark .btn-secondary {
+    background-color: #10b981;
+  }
+  
+  body.dark .job-card {
+    background-color: #1e293b;
+    color: #f9fafb;
+  }
   
