@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Seeker Dashboard - JobBoard</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+      max-width: 500px;
+      width: 90%;
+    }
+    .modal.show { display: block; }
+    .modal input, .modal textarea {
+      width: 100%;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="container">
+      <h1 class="logo">JobBoard</h1>
+      <nav>
+        <a href="login.html">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2>Available Jobs</h2>
+    <section id="job-list" class="job-listings">
+      <!-- Jobs will be rendered here -->
+    </section>
+  </main>
+
+  <!-- Application Modal -->
+  <div id="applicationModal" class="modal">
+    <h3>Apply for Job</h3>
+    <form id="applicationForm">
+      <input type="hidden" id="jobId" />
+      <label>Cover Letter</label>
+      <textarea id="coverLetter" required></textarea>
+      <label>Resume URL (optional)</label>
+      <input type="url" id="resumeUrl" placeholder="Link to resume" />
+      <button type="submit" class="btn-primary">Submit Application</button>
+      <button type="button" onclick="closeModal()">Cancel</button>
+    </form>
+  </div>
+
+  <script>
+    const jobList = document.getElementById("job-list");
+    const modal = document.getElementById("applicationModal");
+    const token = localStorage.getItem("token");
+
+    // Load all jobs
+    async function loadJobs() {
+      try {
+        const res = await fetch("http://localhost:5000/api/jobs");
+        const jobs = await res.json();
+
+        jobList.innerHTML = jobs.map(job => `
+          <div class="job-card">
+            <h4>${job.title}</h4>
+            <p>${job.company} | ${job.location}</p>
+            <p><strong>Salary:</strong> $${job.salary}</p>
+            <p>${job.description}</p>
+            <button onclick="openModal('${job._id}')">Apply Now</button>
+          </div>
+        `).join("");
+      } catch (err) {
+        console.error(err);
+        jobList.innerHTML = "<p>Error loading jobs.</p>";
+      }
+    }
+
+    loadJobs();
+
+    function openModal(jobId) {
+      document.getElementById("jobId").value = jobId;
+      modal.classList.add("show");
+    }
+
+    function closeModal() {
+      modal.classList.remove("show");
+    }
+
+    // Submit application
+    document.getElementById("applicationForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const jobId = document.getElementById("jobId").value;
+      const coverLetter = document.getElementById("coverLetter").value;
+      const resumeUrl = document.getElementById("resumeUrl").value;
+
+      try {
+        const res = await fetch("http://localhost:5000/api/applications/apply", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token
+          },
+          body: JSON.stringify({ jobId, coverLetter, resumeUrl })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          alert("Application submitted!");
+          closeModal();
+        } else {
+          alert(data.message || "Failed to apply");
+        }
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    });
+  </script>
+</body>
+</html>
