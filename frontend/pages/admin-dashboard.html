@@ -61,13 +61,11 @@
         const users = await userRes.json();
         const jobs = await jobRes.json();
 
-        // Populate user table
         const userTable = document.querySelector("#userTable tbody");
         userTable.innerHTML = users.map(user => `
           <tr><td>${user.name}</td><td>${user.email}</td><td>${user.role}</td></tr>
         `).join("");
 
-        // Populate job table
         const jobTable = document.querySelector("#jobTable tbody");
         jobTable.innerHTML = jobs.map(job => `
           <tr>

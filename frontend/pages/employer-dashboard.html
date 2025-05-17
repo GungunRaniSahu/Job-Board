@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Employer Dashboard - JobBoard</title>
   <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .applicant-list {
+      margin-top: 1rem;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      background: #f9f9f9;
+    }
+    .applicant {
+      margin-bottom: 1rem;
+    }
+    .applicant p {
+      margin: 0.2rem 0;
+    }
+  </style>
 </head>
 <body>
   <header class="navbar">
@@ -20,9 +34,7 @@
 
   <main class="container">
     <h2>Your Posted Jobs</h2>
-    <section id="job-list" class="job-listings">
-      <!-- Jobs will be injected here -->
-    </section>
+    <section id="job-list" class="job-listings"></section>
   </main>
 
   <footer>
@@ -37,40 +49,74 @@
         window.location.href = "login.html";
         return;
       }
-  
+
       try {
         const response = await fetch("http://localhost:5000/api/jobs/my-jobs", {
-          headers: {
-            Authorization: "Bearer " + token
-          }
+          headers: { Authorization: "Bearer " + token }
         });
-  
+
         if (!response.ok) {
           throw new Error("Failed to load jobs: " + response.statusText);
         }
-  
+
         const jobs = await response.json();
         const jobList = document.getElementById("job-list");
-  
+
         if (!jobs.length) {
           jobList.innerHTML = "<p>You haven't posted any jobs yet.</p>";
           return;
         }
-  
+
         jobList.innerHTML = jobs.map(job => `
           <div class="job-card">
             <h4>${job.title}</h4>
             <p>${job.company} | ${job.location}</p>
             <p><strong>Salary:</strong> $${job.salary}</p>
             <p>${job.description}</p>
+            <button onclick="loadApplicants('${job._id}')">View Applicants</button>
+            <div id="applicants-${job._id}" class="applicant-list" style="display: none;"></div>
           </div>
         `).join("");
+
       } catch (err) {
         console.error(err);
         alert("Error fetching jobs: " + err.message);
       }
     });
+
+    async function loadApplicants(jobId) {
+      const token = localStorage.getItem("token");
+      const container = document.getElementById(`applicants-${jobId}`);
+      container.style.display = 'block';
+      container.innerHTML = "<p>Loading applicants...</p>";
+
+      try {
+        const res = await fetch(`http://localhost:5000/api/jobs/${jobId}/applicants`, {
+          headers: { Authorization: "Bearer " + token }
+        });
+
+        const data = await res.json();
+
+        if (!Array.isArray(data) || data.length === 0) {
+          container.innerHTML = "<p>No applications yet.</p>";
+          return;
+        }
+
+        container.innerHTML = data.map(app => `
+          <div class="applicant">
+            <p><strong>Name:</strong> ${app.applicant?.name || 'N/A'}</p>
+            <p><strong>Email:</strong> ${app.applicant?.email || 'N/A'}</p>
+            <p><strong>Cover Letter:</strong> ${app.coverLetter}</p>
+            <p><a href="${app.resumeUrl}" target="_blank">View Resume</a></p>
+            <hr/>
+          </div>
+        `).join("");
+
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = "<p>Error loading applicants.</p>";
+      }
+    }
   </script>
-  
 </body>
 </html>

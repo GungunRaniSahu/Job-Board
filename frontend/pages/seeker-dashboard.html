@@ -41,11 +41,9 @@
   <main class="container">
     <h2>Available Jobs</h2>
     <section id="job-list" class="job-listings">
-      <!-- Jobs will be rendered here -->
     </section>
   </main>
 
-  <!-- Application Modal -->
   <div id="applicationModal" class="modal">
     <h3>Apply for Job</h3>
     <form id="applicationForm">
@@ -64,7 +62,6 @@
     const modal = document.getElementById("applicationModal");
     const token = localStorage.getItem("token");
 
-    // Load all jobs
     async function loadJobs() {
       try {
         const res = await fetch("http://localhost:5000/api/jobs");
@@ -96,7 +93,6 @@
       modal.classList.remove("show");
     }
 
-    // Submit application
     document.getElementById("applicationForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
