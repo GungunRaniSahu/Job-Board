@@ -1,17 +1,36 @@
 const Job = require('../models/jobModel');
 
 exports.createJob = async (req, res) => {
+  console.log("Creating job...");
+
+  if (!req.user || !req.user.id) {
+    console.log("req.user is missing");
+    return res.status(401).json({ message: "Unauthorized: User not attached" });
+  }
+
   const { title, description, company, location, salary } = req.body;
   const employerId = req.user.id;
 
   try {
-    const newJob = new Job({ title, description, company, location, salary, employerId });
+    const newJob = new Job({
+      title,
+      description,
+      company,
+      location,
+      salary,
+      employerId
+    });
+
     await newJob.save();
+    console.log("✅ Job saved:", newJob);
     res.status(201).json(newJob);
   } catch (err) {
-    res.status(500).json({ message: 'Error creating job', error: err.message });
+    console.error("❌ Error saving job:", err);
+    res.status(500).json({ message: "Failed to save job", error: err.message });
   }
 };
+
+
 
 exports.getAllJobs = async (req, res) => {
   try {
