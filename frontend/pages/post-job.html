@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Post a Job - Job Board</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/style.css" />
 </head>
 <body>
   <header class="navbar">
@@ -19,21 +19,22 @@
 
   <main class="container form-container">
     <h2>Post a New Job</h2>
-    <form>
+    <form id="jobForm">
       <label>Job Title</label>
-      <input type="text" placeholder="e.g. Frontend Developer" required>
+      <input type="text" id="title" placeholder="e.g. Frontend Developer" required />
+
       <label>Company Name</label>
-      <input type="text" placeholder="e.g. TechCorp" required>
+      <input type="text" id="company" placeholder="e.g. TechCorp" required />
+
       <label>Location</label>
-      <input type="text" placeholder="e.g. Toronto, Canada" required>
-      <label>Job Type</label>
-      <select>
-        <option>Full-Time</option>
-        <option>Part-Time</option>
-        <option>Contract</option>
-      </select>
+      <input type="text" id="location" placeholder="e.g. Toronto, Canada" required />
+
+      <label>Salary</label>
+      <input type="number" id="salary" placeholder="e.g. 75000" required />
+
       <label>Description</label>
-      <textarea placeholder="Job details..." rows="5" required></textarea>
+      <textarea id="description" placeholder="Job details..." rows="5" required></textarea>
+
       <button class="btn-primary" type="submit">Submit Job</button>
     </form>
   </main>
@@ -41,5 +42,51 @@
   <footer>
     <p>&copy; 2025 JobBoard. All rights reserved.</p>
   </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("jobForm");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+          alert("Please log in first.");
+          return;
+        }
+
+        const job = {
+          title: document.getElementById("title").value,
+          company: document.getElementById("company").value,
+          location: document.getElementById("location").value,
+          salary: document.getElementById("salary").value,
+          description: document.getElementById("description").value
+        };
+
+        try {
+          const res = await fetch("http://localhost:5000/api/jobs/create", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token
+            },
+            body: JSON.stringify(job)
+          });
+
+          const data = await res.json();
+          if (res.ok) {
+            alert("✅ Job posted!");
+            window.location.href = "employer-dashboard.html";
+          } else {
+            alert("❌ Failed: " + data.message);
+          }
+        } catch (err) {
+          console.error("Job Post Error:", err);
+          alert("Error posting job.");
+        }
+      });
+    });
+  </script>
 </body>
 </html>
