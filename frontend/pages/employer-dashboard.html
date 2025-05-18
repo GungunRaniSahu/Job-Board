@@ -26,14 +26,15 @@
       <h1 class="logo">JobBoard</h1>
       <nav>
         <a href="index.html">Home</a>
-        <a href="post-job.html">Post a Job</a>
-        <a href="login.html">Logout</a>
+        <a href="post-job.html" id="navPostJob">Post a Job</a>
+        <a href="#" id="logoutBtn">Logout</a>
       </nav>
     </div>
   </header>
 
   <main class="container">
     <h2>Your Posted Jobs</h2>
+    <h3 id="welcomeMessage"></h3>
     <section id="job-list" class="job-listings"></section>
   </main>
 
@@ -117,6 +118,40 @@
         container.innerHTML = "<p>Error loading applicants.</p>";
       }
     }
+    const name = localStorage.getItem("userName");
+if (name) {
+  document.getElementById("welcomeMessage").textContent = `Welcome back, ${name}! 👋`;
+}
+
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        localStorage.clear();
+        window.location.href = "login.html";
+      });
+    }
+  });
+  
+  document.addEventListener("DOMContentLoaded", () => {
+    const userRole = localStorage.getItem("userRole");
+
+    const postJobLink = document.getElementById("navPostJob");
+    if (postJobLink && userRole !== "employer") {
+      postJobLink.style.display = "none";
+    }
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        localStorage.clear();
+        window.location.href = "login.html";
+      });
+    }
+  });
+
+
   </script>
 </body>
 </html>

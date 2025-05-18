@@ -39,11 +39,6 @@
     document.addEventListener("DOMContentLoaded", () => {
       const form = document.getElementById("loginForm");
   
-      if (!form) {
-        console.error("loginForm not found");
-        return;
-      }
-  
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
   
@@ -58,21 +53,28 @@
           });
   
           const data = await res.json();
+  
           if (res.ok) {
             localStorage.setItem("token", data.token);
-            alert("Login successful!");
-            window.location.href = "employer-dashboard.html";
+            localStorage.setItem("userName", data.user.name);
+            localStorage.setItem("userRole", data.user.role);
+  
+            if (data.user.role === "employer") {
+              window.location.href = "employer-dashboard.html";
+            } else {
+              window.location.href = "index.html"; 
+            }
           } else {
-            alert(data.message || "Login failed");
+            alert("Login failed: " + data.message);
           }
         } catch (err) {
-          alert("Error: " + err.message);
+          console.error("Login error:", err);
+          alert("Something went wrong during login.");
         }
       });
     });
-    
   </script>
-  
+    
   
 </body>
 </html>
