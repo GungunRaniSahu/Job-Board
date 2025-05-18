@@ -43,6 +43,11 @@
   </footer>
 
   <script>
+    const name = localStorage.getItem("userName");
+    if (name) {
+      document.getElementById("welcomeMessage").textContent = `Welcome back, ${name}! 👋`;
+    }
+
     document.addEventListener("DOMContentLoaded", async () => {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -56,9 +61,7 @@
           headers: { Authorization: "Bearer " + token }
         });
 
-        if (!response.ok) {
-          throw new Error("Failed to load jobs: " + response.statusText);
-        }
+        if (!response.ok) throw new Error("Failed to load jobs: " + response.statusText);
 
         const jobs = await response.json();
         const jobList = document.getElementById("job-list");
@@ -69,25 +72,53 @@
         }
 
         jobList.innerHTML = jobs.map(job => `
-  <div class="job-card">
-    <h4>${job.title}</h4>
-    <p><strong>Company:</strong> ${job.company}</p>
-    <p><strong>Location:</strong> ${job.location}</p>
-    <p><strong>Salary:</strong> $${job.salary}</p>
-    <p>${job.description}</p>
-    <div class="job-meta">Posted: ${new Date(job.createdAt).toLocaleDateString()}</div>
-    
-    <button class="btn-secondary" onclick="editJob('${job._id}')">Edit</button>
-    <button class="btn-primary" onclick="deleteJob('${job._id}')">Delete</button>
-  </div>
-`).join("");
-
-
+          <div class="job-card">
+            <h4>${job.title}</h4>
+            <p><strong>Company:</strong> ${job.company}</p>
+            <p><strong>Location:</strong> ${job.location}</p>
+            <p><strong>Salary:</strong> $${job.salary}</p>
+            <p>${job.description}</p>
+            <div class="job-meta">Posted: ${new Date(job.createdAt).toLocaleDateString()}</div>
+            <button class="btn-secondary" onclick="editJob('${job._id}')">Edit</button>
+            <button class="btn-primary" onclick="deleteJob('${job._id}')">Delete</button>
+            <div id="applicants-${job._id}" class="applicant-list" style="display: none;"></div>
+          </div>
+        `).join("");
       } catch (err) {
         console.error(err);
         alert("Error fetching jobs: " + err.message);
       }
     });
+
+    async function deleteJob(jobId) {
+      const confirmed = confirm("Are you sure you want to delete this job?");
+      if (!confirmed) return;
+
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`http://localhost:5000/api/jobs/${jobId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        });
+
+        const data = await res.text();
+        if (res.ok) {
+          alert("Job deleted!");
+          location.reload();
+        } else {
+          alert("Failed to delete: " + data.message);
+        }
+      } catch (err) {
+        console.error("Delete failed", err);
+        alert("Something went wrong.");
+      }
+    }
+
+    function editJob(jobId) {
+      alert("Edit clicked for job ID: " + jobId);
+    }
 
     async function loadApplicants(jobId) {
       const token = localStorage.getItem("token");
@@ -116,88 +147,29 @@
             <hr/>
           </div>
         `).join("");
-
       } catch (err) {
         console.error(err);
         container.innerHTML = "<p>Error loading applicants.</p>";
       }
     }
-    const name = localStorage.getItem("userName");
-if (name) {
-  document.getElementById("welcomeMessage").textContent = `Welcome back, ${name}! 👋`;
-}
 
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", () => {
-        localStorage.clear();
-        window.location.href = "login.html";
-      });
-    }
-  });
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const userRole = localStorage.getItem("userRole");
-
-    const postJobLink = document.getElementById("navPostJob");
-    if (postJobLink && userRole !== "employer") {
-      postJobLink.style.display = "none";
-    }
-
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", () => {
-        localStorage.clear();
-        window.location.href = "login.html";
-      });
-    }
-  });
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const userRole = localStorage.getItem("userRole");
-    const postJobLink = document.getElementById("navPostJob");
-
-    if (postJobLink && userRole !== "employer") {
-      postJobLink.style.display = "none";
-    }
-
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", () => {
-        localStorage.clear();
-        window.location.href = "login.html";
-      });
-    }
-  });
-
-  async function deleteJob(jobId) {
-  const confirmed = confirm("Are you sure you want to delete this job?");
-  if (!confirmed) return;
-
-  const token = localStorage.getItem("token");
-  try {
-    const res = await fetch(`http://localhost:5000/api/jobs/${jobId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: "Bearer " + token
+    document.addEventListener("DOMContentLoaded", () => {
+      const userRole = localStorage.getItem("userRole");
+      const postJobLink = document.getElementById("navPostJob");
+      if (postJobLink && userRole !== "employer") {
+        postJobLink.style.display = "none";
       }
     });
 
-    const data = await res.json();
-    if (res.ok) {
-      alert("Job deleted!");
-      location.reload();
-    } else {
-      alert("Failed to delete: " + data.message);
-    }
-  } catch (err) {
-    console.error("Delete failed", err);
-    alert("Something went wrong.");
-  }
-}
-
+    document.addEventListener("DOMContentLoaded", () => {
+      const logoutBtn = document.getElementById("logoutBtn");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+          localStorage.clear();
+          window.location.href = "login.html";
+        });
+      }
+    });
   </script>
 </body>
 </html>
