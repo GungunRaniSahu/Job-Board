@@ -34,15 +34,22 @@ router.get('/:jobId/applicants', authenticate, async (req, res) => {
 });
 
 router.delete('/:id', authenticate, async (req, res) => {
-    const job = await Job.findById(req.params.id);
-    if (!job) return res.status(404).json({ message: 'Job not found' });
+    try {
+      const job = await Job.findById(req.params.id);
   
-    if (job.employerId.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized' });
+      if (!job) {
+        return res.status(404).json({ message: 'Job not found' });
+      }
+  
+      if (job.employerId.toString() !== req.user.id) {
+        return res.status(403).json({ message: 'Not authorized' });
+      }
+  
+      await job.deleteOne();
+      res.status(200).json({ message: 'Job deleted successfully' });
+    } catch (err) {
+      res.status(500).json({ message: 'Server error', error: err.message });
     }
-  
-    await job.deleteOne();
-    res.status(200).json({ message: 'Job deleted successfully' });
   });
   
 
