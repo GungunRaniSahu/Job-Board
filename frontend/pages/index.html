@@ -44,5 +44,23 @@
   <footer>
     <p>&copy; 2025 JobBoard. All rights reserved.</p>
   </footer>
+  <script>
+     document.addEventListener("DOMContentLoaded", () => {
+    const userRole = localStorage.getItem("userRole");
+    const postJobLink = document.getElementById("navPostJob");
+
+    if (postJobLink && userRole !== "employer") {
+      postJobLink.style.display = "none";
+    }
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        localStorage.clear();
+        window.location.href = "login.html";
+      });
+    }
+  });
+  </script>
 </body>
 </html>
