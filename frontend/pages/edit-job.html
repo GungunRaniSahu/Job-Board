@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit Job - JobBoard</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <div class="container form-container">
+    <h2>Edit Job</h2>
+    <form id="editJobForm">
+      <label>Title</label>
+      <input type="text" id="title" required />
+      <label>Company</label>
+      <input type="text" id="company" required />
+      <label>Location</label>
+      <input type="text" id="location" required />
+      <label>Salary</label>
+      <input type="number" id="salary" required />
+      <label>Description</label>
+      <textarea id="description" rows="5" required></textarea>
+      <button type="submit" class="btn-primary">Update Job</button>
+    </form>
+  </div>
+
+  <script>
+    const jobId = new URLSearchParams(window.location.search).get("id");
+    const token = localStorage.getItem("token");
+
+    async function fetchJob() {
+      const res = await fetch(`http://localhost:5000/api/jobs/${jobId}`, {
+        headers: { Authorization: "Bearer " + token }
+      });
+      const job = await res.json();
+
+      document.getElementById("title").value = job.title;
+      document.getElementById("company").value = job.company;
+      document.getElementById("location").value = job.location;
+      document.getElementById("salary").value = job.salary;
+      document.getElementById("description").value = job.description;
+    }
+
+    fetchJob();
+
+    document.getElementById("editJobForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const updatedJob = {
+        title: document.getElementById("title").value,
+        company: document.getElementById("company").value,
+        location: document.getElementById("location").value,
+        salary: document.getElementById("salary").value,
+        description: document.getElementById("description").value,
+      };
+
+      const res = await fetch(`http://localhost:5000/api/jobs/${jobId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token
+        },
+        body: JSON.stringify(updatedJob)
+      });
+
+      if (res.ok) {
+        alert("✅ Job updated!");
+        window.location.href = "employer-dashboard.html";
+      } else {
+        alert("❌ Failed to update");
+      }
+    });
+  </script>
+</body>
+</html>
