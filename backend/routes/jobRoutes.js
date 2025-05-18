@@ -52,5 +52,40 @@ router.delete('/:id', authenticate, async (req, res) => {
     }
   });
   
+  router.get('/:id', authenticate, async (req, res) => {
+    try {
+      const job = await Job.findById(req.params.id);
+      if (!job) return res.status(404).json({ message: "Job not found" });
+  
+      res.status(200).json(job);
+    } catch (err) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  router.put('/:id', authenticate, async (req, res) => {
+    try {
+      const job = await Job.findById(req.params.id);
+      if (!job) return res.status(404).json({ message: "Job not found" });
+  
+      if (job.employerId.toString() !== req.user.id) {
+        return res.status(403).json({ message: "Not authorized" });
+      }
+  
+      const { title, company, location, salary, description } = req.body;
+  
+      job.title = title;
+      job.company = company;
+      job.location = location;
+      job.salary = salary;
+      job.description = description;
+  
+      await job.save();
+  
+      res.status(200).json({ message: "Job updated", job });
+    } catch (err) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
 
 module.exports = router;
