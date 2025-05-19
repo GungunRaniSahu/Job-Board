@@ -72,18 +72,21 @@
         }
 
         jobList.innerHTML = jobs.map(job => `
-          <div class="job-card">
-            <h4>${job.title}</h4>
-            <p><strong>Company:</strong> ${job.company}</p>
-            <p><strong>Location:</strong> ${job.location}</p>
-            <p><strong>Salary:</strong> $${job.salary}</p>
-            <p>${job.description}</p>
-            <div class="job-meta">Posted: ${new Date(job.createdAt).toLocaleDateString()}</div>
-            <button class="btn-secondary" onclick="editJob('${job._id}')">Edit</button>
-            <button class="btn-primary" onclick="deleteJob('${job._id}')">Delete</button>
-            <div id="applicants-${job._id}" class="applicant-list" style="display: none;"></div>
-          </div>
-        `).join("");
+  <div class="job-card">
+    <div class="job-info">
+      <h4>${job.title}</h4>
+      <p><strong>Company:</strong> ${job.company}</p>
+      <p><strong>Location:</strong> ${job.location}</p>
+      <p><strong>Salary:</strong> $${job.salary}</p>
+      <p>${job.description}</p>
+    </div>
+    <div class="job-actions">
+      <button class="btn-secondary" onclick="editJob('${job._id}')">✏️ Edit</button>
+      <button class="btn-primary" onclick="deleteJob('${job._id}')">🗑️ Delete</button>
+    </div>
+  </div>
+`).join("");
+
       } catch (err) {
         console.error(err);
         alert("Error fetching jobs: " + err.message);
