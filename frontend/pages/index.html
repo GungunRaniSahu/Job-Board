@@ -11,7 +11,7 @@
     <div class="container">
       <h1 class="logo">JobBoard</h1>
       <nav>
-        <a href="login.html">Logout</a>
+        <a href="#" id="logoutBtn">Logout</a>
         <a href="login.html">Login</a>
         <a href="register.html">Register</a>
         <a href="post-job.html" id="navPostJob">Post a Job</a>
@@ -26,26 +26,17 @@
       <input type="text" placeholder="Search jobs..." class="search-box"/>
     </section>
 
-    <section class="job-listings">
-      <h3>Recent Jobs</h3>
-      <div class="job-card">
-        <h4>Frontend Developer</h4>
-        <p>ABC Tech | Toronto | Full-Time</p>
-        <a href="#" class="btn-secondary">View Details</a>
-      </div>
-      <div class="job-card">
-        <h4>Backend Developer</h4>
-        <p>XYZ Innovations | Vancouver | Contract</p>
-        <a href="#" class="btn-secondary">View Details</a>
-      </div>
+    <section id="job-list" class="job-listings">
+
     </section>
+    
   </main>
 
   <footer>
     <p>&copy; 2025 JobBoard. All rights reserved.</p>
   </footer>
   <script>
-     document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", async () => {
     const userRole = localStorage.getItem("userRole");
     const postJobLink = document.getElementById("navPostJob");
 
@@ -60,7 +51,44 @@
         window.location.href = "login.html";
       });
     }
+
+    const token = localStorage.getItem("token");
+    const jobList = document.getElementById("job-list");
+
+    if (!jobList) {
+      console.error("Missing element: #job-list");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5000/api/jobs", {
+        headers: {
+          "Authorization": "Bearer " + token
+        }
+      });
+
+      const jobs = await res.json();
+
+      if (!Array.isArray(jobs) || jobs.length === 0) {
+        jobList.innerHTML = "<p>No jobs available at the moment.</p>";
+        return;
+      }
+
+      jobList.innerHTML = jobs.map(job => `
+        <div class="job-card">
+          <h4>${job.title}</h4>
+          <p><strong>Company:</strong> ${job.company}</p>
+          <p><strong>Location:</strong> ${job.location}</p>
+          <p><strong>Salary:</strong> $${job.salary}</p>
+          <p>${job.description}</p>
+          <button class="btn-primary" onclick="alert('Apply logic coming soon')">Apply</button>
+        </div>
+      `).join("");
+
+    } catch (err) {
+      console.error("Failed to load jobs", err);
+    }
   });
-  </script>
+</script>
 </body>
 </html>
