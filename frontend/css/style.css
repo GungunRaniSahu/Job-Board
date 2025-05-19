@@ -286,3 +286,21 @@ body.dark .job-card p {
   justify-content: space-between;
   align-items: center;
 }
+
+.job-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.job-info {
+  flex: 1;
+}
+
+.job-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
