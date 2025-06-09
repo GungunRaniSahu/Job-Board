@@ -88,4 +88,35 @@ router.delete('/:id', authenticate, async (req, res) => {
     }
   });
 
+
+// POST /api/jobs/:jobId/apply
+router.post('/:jobId/apply', authenticate, async (req, res) => {
+  const { jobId } = req.params;
+  const userId = req.user.id;
+  const { coverLetter, resumeUrl } = req.body;
+
+  try {
+    const job = await Job.findById(jobId);
+    if (!job) return res.status(404).json({ message: "Job not found" });
+
+    const existingApplication = await Application.findOne({ job: jobId, applicant: userId });
+    if (existingApplication) {
+      return res.status(400).json({ message: "Already applied to this job" });
+    }
+
+    const newApp = await Application.create({
+      job: jobId,
+      applicant: userId,
+      coverLetter,
+      resumeUrl
+    });
+
+    res.status(201).json({ message: "Application submitted", application: newApp });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+
+
 module.exports = router;
