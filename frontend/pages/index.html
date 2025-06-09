@@ -35,6 +35,21 @@
   <footer>
     <p>&copy; 2025 JobBoard. All rights reserved.</p>
   </footer>
+  <!-- Apply Modal -->
+<div id="applyModal" class="form-container" style="display: none; position: fixed; top: 10%; left: 50%; transform: translateX(-50%); background: white; z-index: 999; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.3); max-width: 500px;">
+  <h3>Apply for Job</h3>
+  <form id="applyForm">
+    <input type="hidden" id="applyJobId" />
+    <label>Cover Letter</label>
+    <textarea id="coverLetter" rows="4" required></textarea>
+    <label>Upload Resume (PDF only)</label>
+    <input type="file" id="resumeFile" accept=".pdf" required />
+    
+    <button type="submit" class="btn-primary">Submit Application</button>
+    <button type="button" onclick="closeModal()" class="btn-secondary">Cancel</button>
+  </form>
+</div>
+
   <script>
   document.addEventListener("DOMContentLoaded", async () => {
     const userRole = localStorage.getItem("userRole");
@@ -81,7 +96,7 @@
           <p><strong>Location:</strong> ${job.location}</p>
           <p><strong>Salary:</strong> $${job.salary}</p>
           <p>${job.description}</p>
-          <button class="btn-primary" onclick="alert('Apply logic coming soon')">Apply</button>
+<button class="btn-primary" onclick="openApplyModal('${job._id}')">Apply</button>
         </div>
       `).join("");
 
@@ -89,6 +104,61 @@
       console.error("Failed to load jobs", err);
     }
   });
+
+
+  // Open modal
+function openApplyModal(jobId) {
+  document.getElementById("applyJobId").value = jobId;
+  document.getElementById("applyModal").style.display = "block";
+}
+
+// Close modal
+function closeModal() {
+  document.getElementById("applyModal").style.display = "none";
+  document.getElementById("applyForm").reset();
+}
+
+document.getElementById("applyForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const token = localStorage.getItem("token");
+  const jobId = document.getElementById("applyJobId").value;
+  const coverLetter = document.getElementById("coverLetter").value;
+  const resumeFile = document.getElementById("resumeFile").files[0];
+
+  if (!resumeFile) {
+    alert("Please upload a resume file.");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("coverLetter", coverLetter);
+  formData.append("resume", resumeFile); // name must match backend field
+  formData.append("jobId", jobId);
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/jobs/${jobId}/apply`, {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token
+      },
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("✅ Resume uploaded and application submitted!");
+      closeModal();
+    } else {
+      alert("❌ " + data.message);
+    }
+  } catch (err) {
+    console.error(err);
+    alert("❌ Upload failed");
+  }
+});
+
 </script>
 </body>
 </html>
